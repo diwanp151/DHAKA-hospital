@@ -1,0 +1,126 @@
+{% extends 'hospital/doctor_base.html' %}
+{% block content %}
+{%load static%}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+</head>
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 class="panel-title">Your Appointments</h6>
+    </div>
+    <table class="table table-hover" id="dev-table">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Picture</th>
+          <th>Description</th>
+          <th>Mobile</th>
+          <th>Address</th>
+          <th>Date</th>
+          <th>Status</th>
+  <th>Actions</th>
+        </tr>
+      </thead>
+      {% for a, p in appointments %}
+<tr>
+  <!-- Patient name -->
+  <td>{{ a.patientName|default:p.get_name }}</td>
+
+  <!-- Profile picture -->
+  <td>
+    {% if p.profile_pic %}
+      <img src="{{ p.profile_pic.url }}" alt="Profile Pic" height="40" width="40" style="border-radius:50%;">
+    {% else %}
+      <img src="{% static 'default-user.png' %}" alt="No Pic" height="40" width="40" style="border-radius:50%;">
+    {% endif %}
+  </td>
+
+  <!-- Description -->
+  <td>{{ a.description|default:"—" }}</td>
+
+  <!-- Mobile -->
+  <td>{{ p.mobile|default:"—" }}</td>
+
+  <!-- Address -->
+  <td>{{ p.address|default:"—" }}</td>
+
+  <!-- Appointment Date -->
+  <td>
+    {% if a.date %}
+      {{ a.date|date:"M d, Y" }} <br>
+      <small class="text-muted">{{ a.date|time:"h:i A" }}</small>
+    {% else %}
+      —
+    {% endif %}
+  </td>
+
+  <!-- Status -->
+  <td>
+    {% if a.status == 'pending' %}
+      <span class="badge badge-warning">Pending</span>
+    {% elif a.status == 'completed' %}
+      <span class="badge badge-success">Completed</span>
+    {% elif a.status == 'cancelled' %}
+      <span class="badge badge-danger">Cancelled</span>
+    {% else %}
+      <span class="badge badge-secondary">{{ a.status|title }}</span>
+    {% endif %}
+  </td>
+
+  <!-- Actions -->
+  <td>
+    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+      {% if a.status == 'pending' %}
+        <form method="post" action="{% url 'doctor-appointment-action' a.id 'confirm' %}">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-success">Confirm</button>
+        </form>
+
+        <form method="post" action="{% url 'doctor-appointment-action' a.id 'complete' %}">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-primary">Complete</button>
+        </form>
+
+        <form method="post" action="{% url 'doctor-appointment-action' a.id 'cancel' %}">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger">Cancel</button>
+        </form>
+      {% elif a.status == 'completed' %}
+        <span class="badge badge-success">Completed</span>
+      {% elif a.status == 'cancelled' %}
+        <span class="badge badge-danger">Cancelled</span>
+      {% endif %}
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="8" class="text-center text-muted py-3">
+    <i class="fas fa-calendar-times"></i> No appointments found.
+  </td>
+</tr>
+{% endfor %}
+
+    </table>
+  </div>
+</div>
+
+{% endblock content %}

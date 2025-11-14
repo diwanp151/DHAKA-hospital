@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    /* Footer Container */
+    footer {
+      background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+      color: #fff;
+      padding: 40px 0;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Social Icons */
+    .social-icons {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .social-icons a {
+      display: inline-block;
+      margin: 0 10px;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .social-icons a::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.4s ease;
+      opacity: 0;
+    }
+    .social-icons a:hover {
+      color: #4ca1af;
+      transform: scale(1.1) rotate(10deg);
+      background: #fff;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    .social-icons a:hover::after {
+      width: 120%;
+      height: 120%;
+      opacity: 1;
+    }
+
+    /* Footer Text */
+    .footer-text {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+      animation: fadeInUp 1s ease-out both;
+    }
+
+    /* Fade-in Up Animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+      .social-icons a {
+        margin: 0 5px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<footer>
+  <div class="social-icons">
+    <a href="https://facebook.com/diwan.p/" class="fa fa-facebook" title="Facebook"></a>
+    <a href="https://api.whatsapp.com/send?phone=917702390287&text=Hello%20Diwan.%0d%0aHow%20are%20you%20%3f%0d%0aI%20came%20from%20your%20website.&source=&data=#" class="fa fa-whatsapp" title="WhatsApp"></a>
+    <a href="https://www.instagram.com/diwanp151?igsh=dzVldzN0aDQ2a3N1" class="fa fa-instagram" title="Instagram"></a>
+    <a href="https://twitter.com/Diwanp151" class="fa fa-twitter" title="Twitter"></a>
+  </div>
+
+  <div class="footer-text">
+    <p>Made in Telangana</p>
+    <p>Copyright © 2025 Diwanp151</p>
+  </div>
+</footer>

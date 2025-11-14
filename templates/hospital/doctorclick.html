@@ -1,0 +1,156 @@
+{% extends 'hospital/homebase.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.doctor-jumbo-hero {
+  margin-top: 0;
+  width: 100vw;
+  left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+  padding: 140px 0 36px 0; /* Adjust 140px for your navbar height */
+  background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+  color: #fff;
+  text-align: center;
+  border-bottom-left-radius: 48px;
+  border-bottom-right-radius: 48px;
+  box-shadow: 0 5px 36px rgba(50,70,140,0.09);
+  position: relative;
+  z-index: 1;
+}
+.doctor-jumbo-hero .display-4 {
+  font-weight: 700;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.15);
+  font-size: 2.7rem;
+  letter-spacing: 1px;
+}
+.doctor-jumbo-hero .bigtagline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.cta-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-top: 20px;
+}
+.doctor-btn {
+  display: inline-block;
+  min-width: 140px;
+  padding: 12px 0;
+  font-size: 1.13rem;
+  font-weight: 600;
+  color: #fff !important;
+  background: linear-gradient(90deg,#3a6186 10%,#89253e 90%);
+  border-radius: 30px;
+  box-shadow: 0 4px 22px rgba(58,97,134,0.14);
+  text-decoration: none;
+  letter-spacing: 1px;
+  position: relative;
+  transition: background .17s, transform .17s, box-shadow .2s;
+  text-align: center;
+}
+.doctor-btn i { font-size: 1.12em; margin-right: 6px; }
+.doctor-btn:hover {
+  background: linear-gradient(90deg,#89253e 20%, #3a6186 80%);
+  transform: translateY(-3px) scale(1.055);
+  box-shadow: 0 10px 20px rgba(137,37,62,0.18);
+}
+.doctor-btn.alt {
+  background: linear-gradient(90deg,#24c6dc 20%,#514a9d 80%);
+}
+.doctor-btn.alt:hover {
+  background: linear-gradient(90deg,#514a9d 10%,#24c6dc 100%);
+}
+.doctor-feature-section {
+  background: #f7f8fd;
+  padding: 45px 0 18px 0;
+  text-align: center;
+}
+.feature-cards-wrap {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2.2rem;
+}
+.feature-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 1.5px 14px rgba(44,70,144,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  min-height: 170px;
+  padding: 18px 10px 18px 10px;
+  margin-bottom: 10px;
+  border-left: 6px solid #3a6186;
+  border-right: 6px solid #89253e;
+  transition: transform .2s, box-shadow .2s;
+  color: #494c5a;
+}
+.feature-card i {
+  font-size: 2.18rem;
+  color: #89253e;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+.feature-card h5 {
+  margin: 0;
+  font-size: 1.13rem;
+  color: #3a6186;
+  font-weight: bold;
+  margin-bottom: 7px;
+  letter-spacing: .5px;
+}
+.feature-card p {
+  font-size: 0.98rem;
+  color: #494c5a;
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .doctor-jumbo-hero { padding: 110px 0 18px 0; }
+  .feature-cards-wrap { flex-direction: column; gap: 1.2rem; }
+  .feature-card { width: 98vw; max-width: 375px; }
+}
+</style>
+
+<!-- Navbar will remain as usual from your base template -->
+
+<div class="doctor-jumbo-hero">
+  <h1 class="display-4">Champion of Healing</h1>
+  <p class="bigtagline">Your dedication saves lives, your compassion inspires hope.<br>
+  Join a community where your expertise transforms the future of healthcare every day.</p>
+  <hr class="my-4">
+  <p>You can access various features after Login/SignUp.</p>
+  <div class="cta-btn-row">
+    <a href="/doctorsignup" class="doctor-btn"><i class="fa fa-user-md"></i>Apply</a>
+    <a href="/doctorlogin" class="doctor-btn alt"><i class="fa fa-sign-in"></i>Login</a>
+  </div>
+</div>
+
+<div class="doctor-feature-section">
+  <div class="feature-cards-wrap">
+    <div class="feature-card">
+      <i class="fa fa-stethoscope"></i>
+      <h5>Modern Platform</h5>
+      <p>Use digital dashboards to manage appointments and patient info efficiently.</p>
+    </div>
+    <div class="feature-card">
+      <i class="fa fa-users"></i>
+      <h5>Collaborative Care</h5>
+      <p>Work in teams with leading professionals. Consult and coordinate remotely.</p>
+    </div>
+    <div class="feature-card">
+      <i class="fa fa-graduation-cap"></i>
+      <h5>Continuous Learning</h5>
+      <p>Get resources & CME credits to keep your practice sharp and updated.</p>
+    </div>
+    <div class="feature-card">
+      <i class="fa fa-star"></i>
+      <h5>Recognition</h5>
+      <p>Earn reviews from satisfied patients, build your reputation online.</p>
+    </div>
+  </div>
+</div>
+{% endblock content %}

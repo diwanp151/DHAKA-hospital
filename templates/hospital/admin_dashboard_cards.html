@@ -1,0 +1,659 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Control System</title>
+
+<style>
+  :root{
+    --bg:#050505;
+    --glass:rgba(15,15,15,.72);
+    --stroke:rgba(0,255,120,.35);
+    --hi:#27ef7e;
+    --dim:#67ffa3;
+    --mut:#0da85e;
+    --red:#ef4444;
+    --blue:#3b82f6;
+    --vio:#a855f7;
+    --amber:#f59e0b;
+    --txt:#dbffe9;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+    background:var(--bg);
+    color:var(--txt);
+    overflow-x:hidden;
+  }
+
+  /* Matrix background (soft) */
+  canvas#matrix{position:fixed;inset:0;width:100%;height:100%;opacity:.08;pointer-events:none;z-index:0}
+
+  /* Neon Glass Navbar */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient( to bottom, rgba(0,0,0,.85), rgba(0,0,0,.55) );
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--stroke);
+    box-shadow:0 6px 30px rgba(0,255,120,.12);
+  }
+  .nav-wrap{
+    max-width:1280px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;gap:18px;justify-content:space-between;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand h1{
+    font-weight:800;letter-spacing:.04em;
+    color:var(--hi);text-shadow:0 0 14px rgba(39,239,126,.6);
+    font-size: clamp(18px, 2.4vw, 26px);
+  }
+  .chip{
+    border:1px solid var(--stroke);
+    color:var(--dim);padding:4px 10px;border-radius:999px;
+    font-size:12px;background:rgba(0,255,120,.06)
+  }
+  .nav-links{display:flex;gap:22px;align-items:center}
+  .nav-links a{
+    position:relative;text-decoration:none;color:var(--txt);
+    opacity:.85;transition:opacity .2s ease;font-size:14px
+  }
+  .nav-links a:hover{opacity:1}
+  .nav-links a:after{
+    content:"";position:absolute;left:0;right:100%;bottom:-6px;height:2px;
+    background: linear-gradient(90deg,var(--hi),#54ffe2);
+    transition: right .25s ease;
+  }
+  .nav-links a:hover:after{right:0}
+  .clock{font-variant-numeric:tabular-nums;color:var(--dim);opacity:.9}
+
+  /* Page Container */
+  .container{position:relative;z-index:1;max-width:1280px;margin:26px auto;padding:0 20px}
+
+  /* Quote */
+  .quote{
+    background:var(--glass);
+    border:1px solid var(--stroke);
+    border-radius:14px;padding:16px 18px;margin-bottom:18px;
+    box-shadow: 0 10px 30px rgba(0,255,120,.08);
+  }
+  .quote p{color:var(--dim);font-style:italic}
+
+  /* Tables - Only for tables inside container */
+  .container table {
+    margin: 0;
+    width: 100%;
+    color: #eafff6 !important;
+    background: transparent !important;
+  }
+  .container thead th {
+    background: rgba(20,255,170,.10) !important;
+    color: #0f0 !important;
+    border: 0 !important;
+    padding: 12px 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  }
+  .container tbody tr {
+    background: rgba(0,0,0,.35) !important;
+    border-bottom: 1px solid rgba(124,255,203,.12) !important;
+  }
+  .container tbody tr:hover {
+    background: rgba(20,255,170,.08) !important;
+  }
+  .container td {
+    padding: 12px 14px !important;
+    vertical-align: middle !important;
+    color: #dbffe9 !important;
+  }
+  /* Tabs */
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px}
+  .tab-btn{
+    background:var(--glass);border:1px solid var(--stroke);color:var(--txt);
+    padding:10px 16px;border-radius:10px;cursor:pointer;
+    transition:.2s; font-weight:600; letter-spacing:.04em;
+  }
+  .tab-btn:hover{box-shadow:0 0 12px rgba(0,255,120,.18)}
+  .tab-btn.active{outline:2px solid var(--hi); text-shadow:0 0 10px rgba(39,239,126,.5)}
+
+  .tab{display:none;animation:fade .25s ease}
+  .tab.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .stat{
+    background:var(--glass);border:1px solid var(--stroke);border-radius:14px;
+    padding:18px;box-shadow:0 12px 32px rgba(0,255,120,.08)
+  }
+  .stat .val{font-size:34px;font-weight:800;color:var(--hi);text-shadow:0 0 10px rgba(39,239,126,.5)}
+  .stat .lbl{color:var(--dim)}
+  .stat .sub{color:var(--mut);opacity:.8;font-size:12px;margin-top:4px}
+
+  /* Cards grid (Doctors / Patients / Appointments) */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:16px}
+  .card{
+    background:var(--glass);border:1px solid var(--stroke);border-radius:14px;padding:16px;
+    box-shadow:0 12px 30px rgba(0,255,120,.07)
+  }
+  .card-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+  .title{font-weight:800;color:var(--txt)}
+  .muted{color:var(--mut);font-size:13px}
+  .pill{font-size:11px;border:1px solid var(--stroke);padding:2px 8px;border-radius:999px;color:var(--dim);background:rgba(0,255,120,.08)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  .row .item{background:rgba(0,255,120,.05);border:1px dashed var(--stroke);border-radius:10px;padding:10px}
+  .item .k{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .item .v{color:var(--txt);font-weight:700;margin-top:2px}
+
+  .card.removing {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+  /* Actions */
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid; background:transparent;color:inherit; padding:8px 10px;border-radius:10px;cursor:pointer; font-weight:700}
+  .edit{border-color:rgba(59,130,246,.5); color:var(--blue)}
+  .view{border-color:rgba(168,85,247,.55); color:var(--vio)}
+  .del{border-color:rgba(239,68,68,.55); color:var(--red)}
+  .cancel{border-color:rgba(239,68,68,.55); color:var(--red)}
+  .btn:hover{box-shadow:0 0 10px currentColor}
+  
+
+  /* Status */
+  .badge{padding:3px 8px;border-radius:8px;border:1px solid; font-size:11px}
+  .ok{color:var(--hi);border-color:rgba(39,239,126,.5); background:rgba(39,239,126,.08)}
+  .pending{color:var(--amber);border-color:rgba(245,158,11,.5); background:rgba(245,158,11,.08)}
+  .cancelled{color:var(--red);border-color:rgba(239,68,68,.5); background:rgba(239,68,68,.08)}
+
+  /* Section shells */
+  .shell{margin-top:22px}
+  .shell h2{font-size:18px;color:var(--hi);margin-bottom:10px;letter-spacing:.06em;text-shadow:0 0 10px rgba(0,255,0,0.5)}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:center;z-index:60;padding:18px}
+  .modal.active{display:flex}
+  .modal-card{width:min(880px,98vw);max-height:90vh;overflow:auto;background:var(--glass);border:1px solid var(--stroke);border-radius:16px;padding:18px}
+  .modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .x{background:none;border:none;color:var(--red);font-size:26px;cursor:pointer}
+
+  .form{display:grid;gap:12px}
+  label{color:var(--mut);font-size:12px}
+  input[type=text],input[type=number]{width:100%;padding:10px;border-radius:10px;background:#0b1510;border:1px solid var(--stroke);color:var(--txt)}
+  .submit{margin-top:8px;border:1px solid var(--stroke);color:var(--hi);padding:10px;border-radius:10px;background:#07150d;cursor:pointer}
+  .submit:hover{box-shadow:0 0 12px rgba(39,239,126,.3)}
+
+  .loading{opacity:.8;color:var(--mut);padding:16px;text-align:center}
+
+  @media (max-width:720px){
+    .row{grid-template-columns:1fr}
+    .nav-wrap{flex-wrap:wrap;gap:10px}
+    .nav-links{gap:14px}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="nav-wrap">
+    <div class="brand">
+      <h1>ADMIN.CONTROL.SYSTEM</h1>
+      <span class="chip">ACCESS: ROOT</span>
+    </div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#doctors">Doctors</a>
+      <a href="#patients">Patients</a>
+      <a href="#appointments">Appointments</a>
+      <span class="clock" id="clock">--:--:--</span>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Motivation -->
+  <div class="quote"><p id="quote">“Excellence in administration creates excellence in care.”</p></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="overview">[OVERVIEW]</button>
+    <button class="tab-btn" data-tab="doctors">[DOCTORS]</button>
+    <button class="tab-btn" data-tab="patients">[PATIENTS]</button>
+    <button class="tab-btn" data-tab="appointments">[APPOINTMENTS]</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="tab active" id="overview">
+    <div class="stats" id="stats">
+      <div class="loading">Loading stats…</div>
+    </div>
+
+    <div class="shell">
+      <h2>RECENT.APPOINTMENTS</h2>
+      <div class="grid" id="recent-appointments">
+        <div class="loading">Loading appointments…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section class="tab" id="doctors">
+    <div class="shell">
+      <h2>DOCTOR.MANAGEMENT</h2>
+      <div class="grid" id="doctors-grid">
+        <div class="loading">Loading doctors…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATIENTS -->
+  <section class="tab" id="patients">
+    <div class="shell">
+      <h2>PATIENT.MANAGEMENT</h2>
+      <div class="grid" id="patients-grid">
+        <div class="loading">Loading patients…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPOINTMENTS -->
+  <section class="tab" id="appointments">
+    <div class="shell">
+      <h2>APPOINTMENT.TRACKING</h2>
+      <div class="grid" id="appointments-grid">
+        <div class="loading">Loading appointments…</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- EDIT DOCTOR MODAL -->
+<div class="modal" id="editModal">
+  <div class="modal-card">
+    <div class="modal-h">
+      <h3 class="title">EDIT.DOCTOR.PROFILE</h3>
+      <button class="x" onclick="closeModal('editModal')">&times;</button>
+    </div>
+    <form class="form" onsubmit="updateDoctor(event)">
+      <input type="hidden" id="docId"/>
+      <div>
+        <label>Qualification</label>
+        <input type="text" id="docQual" required/>
+      </div>
+      <div>
+        <label>Experience</label>
+        <input type="text" id="docExp" required/>
+      </div>
+      <div>
+        <label>Duty Time</label>
+        <input type="text" id="docDuty" required/>
+      </div>
+      <button class="submit" type="submit">UPDATE.PROFILE</button>
+    </form>
+  </div>
+</div>
+
+<!-- DOCTOR APPTS MODAL -->
+<div class="modal" id="docApptModal">
+  <div class="modal-card">
+    <div class="modal-h">
+      <h3 class="title" id="docApptTitle">DOCTOR.APPOINTMENTS</h3>
+      <button class="x" onclick="closeModal('docApptModal')">&times;</button>
+    </div>
+    <div id="docApptBody" class="grid"></div>
+  </div>
+</div>
+
+<!-- PATIENT APPTS MODAL -->
+<div class="modal" id="patApptModal">
+  <div class="modal-card">
+    <div class="modal-h">
+      <h3 class="title" id="patApptTitle">PATIENT.APPOINTMENTS</h3>
+      <button class="x" onclick="closeModal('patApptModal')">&times;</button>
+    </div>
+    <div id="patInfo" class="card" style="margin-bottom:10px;"></div>
+    <div id="patApptBody" class="grid"></div>
+  </div>
+</div>
+
+<script>
+/* -------- Matrix bg (soft) -------- */
+const cvs=document.getElementById('matrix'),ctx=cvs.getContext('2d');
+function size(){cvs.width=innerWidth;cvs.height=innerHeight}
+size(); addEventListener('resize',size);
+const code='アイウエオカキクケコサシスセソ0123456789', fs=16, cols=()=>Math.floor(cvs.width/fs);
+let drops=Array(cols()).fill(1);
+setInterval(()=>{ctx.fillStyle='rgba(0,0,0,.06)';ctx.fillRect(0,0,cvs.width,cvs.height);
+ctx.fillStyle='#27ef7e';ctx.font=fs+'px monospace';
+for(let i=0;i<drops.length;i++){const t=code[Math.random()*code.length|0];
+ctx.fillText(t,i*fs,drops[i]*fs); if(drops[i]*fs>cvs.height && Math.random()>.975) drops[i]=0; drops[i]++;}
+},40);
+
+/* -------- Helpers -------- */
+const $=sel=>document.querySelector(sel);
+const $$=sel=>document.querySelectorAll(sel);
+function openModal(id){document.getElementById(id).classList.add('active')}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+function csrftoken(){
+  let v=null; document.cookie.split(';').forEach(c=>{
+    c=c.trim(); if(c.startsWith('csrftoken=')) v=decodeURIComponent(c.split('=')[1]);
+  }); return v;
+}
+function clock(){ $('#clock').textContent=new Date().toLocaleString(); } clock(); setInterval(clock,1000);
+
+/* -------- Tabs -------- */
+$$('.tab-btn').forEach(b=>{
+  b.onclick=()=>{ $$('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    $$('.tab').forEach(t=>t.classList.remove('active')); $('#'+b.dataset.tab).classList.add('active');
+    location.hash=b.dataset.tab;
+  }
+});
+if(location.hash){ const id=location.hash.slice(1); const btn=[...$$('.tab-btn')].find(b=>b.dataset.tab===id); if(btn) btn.click(); }
+
+/* -------- Quotes -------- */
+const quotes=[
+ "Leading healthcare excellence, one decision at a time.",
+ "Your dedication saves lives. Keep pushing forward.",
+ "Excellence in administration creates excellence in care.",
+ "Behind every great hospital is an exceptional admin.",
+ "Data-driven decisions, compassionate outcomes.",
+ "You're the backbone of healthcare innovation.",
+ "Managing today's health, shaping tomorrow's care.",
+ "Every metric you track represents a life you touch."
+];
+function setQuote(){ $('#quote').textContent='“'+quotes[Math.random()*quotes.length|0]+'”'; }
+setQuote(); setInterval(setQuote, 10000);
+
+/* -------- Loaders -------- */
+function loadStats(){
+  fetch('/admin/api/stats/').then(r=>r.json()).then(d=>{
+    $('#stats').innerHTML = `
+      <div class="stat"><div class="val">${d.total_doctors}</div><div class="lbl">Total Doctors</div><div class="sub">${d.approved_doctors} active</div></div>
+      <div class="stat"><div class="val">${d.total_patients}</div><div class="lbl">Total Patients</div><div class="sub">${d.approved_patients} active</div></div>
+      <div class="stat"><div class="val">${d.total_appointments}</div><div class="lbl">Appointments</div><div class="sub">${d.pending_appointments} pending</div></div>
+      <div class="stat"><div class="val">${d.completed_appointments}</div><div class="lbl">Completed</div><div class="sub">${d.confirmed_appointments} confirmed</div></div>
+    `;
+  });
+}
+
+function loadRecent(){
+  fetch('/admin/api/appointments/').then(r=>r.json()).then(d=>{
+    const items = d.appointments.slice(0,6).map(a=>`
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <div class="title">${a.patient_name} → ${a.doctor_name}</div>
+            <div class="muted">${a.date} • ${a.time}</div>
+          </div>
+          <span class="badge ${a.status==='cancelled'?'cancelled':(a.status==='pending'?'pending':'ok')}">${a.status.toUpperCase()}</span>
+        </div>
+        <div class="row">
+          <div class="item"><div class="k">Reason</div><div class="v">${a.reason||'—'}</div></div>
+          <div class="item"><div class="k">Notes</div><div class="v">${a.description||'—'}</div></div>
+        </div>
+      </div>
+    `).join('');
+    $('#recent-appointments').innerHTML = items || '<div class="loading">No recent appointments</div>';
+  });
+}
+
+function loadDoctors(){
+  fetch('/admin/api/doctors/').then(r=>r.json()).then(d=>{
+    const html = d.doctors.map(x=>`
+      <div class="card" id="doctor-${x.id}">
+        <div class="card-h">
+          <div>
+            <div class="title">${x.name}</div>
+            <div class="muted">${x.department}</div>
+          </div>
+          <div class="actions">
+            <span class="badge ${x.status ? 'ok':'pending'}">${x.status?'ACTIVE':'PENDING'}</span>
+            <button class="btn edit" onclick="openEdit(${x.id}, '${(x.qualification||'').replace(/'/g,"&#39;")}', '${(x.experience||'').replace(/'/g,"&#39;")}', '${(x.duty_time||'').replace(/'/g,"&#39;")}')">EDIT</button>
+            <button class="btn view" onclick="viewDocAppts(${x.id}, '${x.name.replace(/'/g,"&#39;")}')">VIEW</button>
+            <button class="btn del" onclick="delDoctor(${x.id})">DELETE</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="item"><div class="k">Qualification</div><div class="v">${x.qualification||'—'}</div></div>
+          <div class="item"><div class="k">Experience</div><div class="v">${x.experience||'—'}</div></div>
+          <div class="item"><div class="k">Duty Time</div><div class="v">${x.duty_time||'—'}</div></div>
+          <div class="item"><div class="k">Appointments</div><div class="v">${x.appointment_count||0}</div></div>
+        </div>
+      </div>
+    `).join('');
+    $('#doctors-grid').innerHTML = html || '<div class="loading">No doctors</div>';
+  });
+}
+
+function loadPatients(){
+  fetch('/admin/api/patients/').then(r=>r.json()).then(d=>{
+    const html = d.patients.map(p=>`
+      <div class="card" id="patient-${p.id}">
+        <div class="card-h">
+          <div>
+            <div class="title">${p.name}</div>
+            <div class="muted">${p.age||'—'} yrs • ${p.gender||'—'}</div>
+          </div>
+          <div class="actions">
+            <button class="btn view" onclick="viewPatAppts(${p.id}, '${p.name.replace(/'/g,"&#39;")}')">VIEW</button>
+            <button class="btn del" onclick="delPatient(${p.id})">DELETE</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="item"><div class="k">Blood Group</div><div class="v">${p.blood_group||'—'}</div></div>
+          <div class="item"><div class="k">Phone</div><div class="v">${p.phone||'—'}</div></div>
+          <div class="item"><div class="k">Email</div><div class="v">${p.email||'—'}</div></div>
+          <div class="item"><div class="k">Appointments</div><div class="v">${p.appointment_count||0}</div></div>
+        </div>
+      </div>
+    `).join('');
+    $('#patients-grid').innerHTML = html || '<div class="loading">No patients</div>';
+  });
+}
+
+function loadAllAppointments(){
+  fetch('/admin/api/appointments/').then(r=>r.json()).then(d=>{
+    const html = d.appointments.map(a=>`
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <div class="title">${a.patient_name} → ${a.doctor_name}</div>
+            <div class="muted">${a.date} • ${a.time}</div>
+          </div>
+          <div class="actions">
+            <span class="badge ${a.status==='cancelled'?'cancelled':(a.status==='pending'?'pending':'ok')}">${a.status.toUpperCase()}</span>
+            ${a.status!=='cancelled'?`<button class="btn cancel" onclick="cancelAppt(${a.id})">CANCEL</button>`:''}
+          </div>
+        </div>
+        <div class="row">
+          <div class="item"><div class="k">Reason</div><div class="v">${a.reason||'—'}</div></div>
+          <div class="item"><div class="k">Notes</div><div class="v">${a.description||'—'}</div></div>
+        </div>
+      </div>
+    `).join('');
+    $('#appointments-grid').innerHTML = html || '<div class="loading">No appointments</div>';
+  });
+}
+
+/* -------- Actions -------- */
+function openEdit(id){
+  fetch(`/admin/api/doctor/${id}/view/`).then(r=>r.json()).then(d=>{
+    $('#docId').value=id;
+    $('#docQual').value=d.qualification||'';
+    $('#docExp').value=d.experience||'';
+    $('#docDuty').value=d.duty_timings||'';
+    openModal('editModal');
+  }).catch(e=>alert('Failed to load doctor: '+e));
+}
+function updateDoctor(ev){
+  ev.preventDefault();
+  const body=JSON.stringify({
+    qualification: $('#docQual').value,
+    experience: $('#docExp').value,
+    duty_time: $('#docDuty').value
+  });
+  fetch(`/admin/api/doctor/${$('#docId').value}/update/`,{
+    method:'POST', 
+    headers:{'X-CSRFToken': csrftoken(),'Content-Type':'application/json'}, 
+    body
+  }).then(r=>r.json()).then(d=>{
+    if(d.success){ 
+      closeModal('editModal'); 
+      loadDoctors(); 
+      alert('✅ Doctor updated successfully!'); 
+    } else {
+      alert('❌ ' + (d.message || 'Update failed'));
+    }
+  }).catch(e=>alert('❌ Network error: '+e));
+}
+
+function delDoctor(id){
+  if(!confirm('Delete this doctor? This action cannot be undone.')) return;
+  
+  const card = document.getElementById(`doctor-${id}`);
+  if(card) card.classList.add('removing');
+  
+  fetch(`/admin/api/doctor/${id}/delete/`,{
+    method:'POST',
+    headers:{'X-CSRFToken':csrftoken(),'Content-Type':'application/json'}
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      setTimeout(()=>{ 
+        if(card) card.remove(); 
+        loadStats(); 
+      }, 300);
+      alert('✅ Doctor deleted successfully!');
+    } else {
+      if(card) card.classList.remove('removing');
+      alert('❌ ' + (d.message || 'Delete failed'));
+    }
+  })
+  .catch(e=>{
+    if(card) card.classList.remove('removing');
+    alert('❌ Network error: '+e);
+  });
+}
+
+/* View in modals */
+function viewDocAppts(id,name){
+  $('#docApptTitle').textContent=`DOCTOR.APPOINTMENTS — ${name}`;
+  openModal('docApptModal');
+  
+  fetch(`/admin/api/doctor/${id}/appointments/`)
+  .then(r=>r.json())
+  .then(d=>{
+    const html = d.appointments.map(a=>`
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <div class="title">${a.patient_name}</div>
+            <div class="muted">${a.date} • ${a.time}</div>
+          </div>
+          <span class="badge ${a.status==='cancelled'?'cancelled':(a.status==='pending'?'pending':'ok')}">${a.status.toUpperCase()}</span>
+        </div>
+      </div>
+    `).join('');
+    $('#docApptBody').innerHTML = html || '<div class="loading">No appointments</div>';
+  })
+  .catch(e=>alert('Failed to load appointments: '+e));
+}
+
+function viewPatAppts(id,name){
+  $('#patApptTitle').textContent=`PATIENT.APPOINTMENTS — ${name}`;
+  openModal('patApptModal');
+  
+  fetch(`/admin/api/patient/${id}/`)
+  .then(r=>r.json())
+  .then(d=>{
+    $('#patInfo').innerHTML = `
+      <div class="row">
+        <div class="item"><div class="k">Phone</div><div class="v">${d.patient.phone||'—'}</div></div>
+        <div class="item"><div class="k">Email</div><div class="v">${d.patient.email||'—'}</div></div>
+      </div>`;
+    
+    const html = d.appointments.map(a=>`
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <div class="title">${a.doctor_name}</div>
+            <div class="muted">${a.date} • ${a.time}</div>
+          </div>
+          <span class="badge ${a.status==='cancelled'?'cancelled':(a.status==='pending'?'pending':'ok')}">${a.status.toUpperCase()}</span>
+        </div>
+      </div>
+    `).join('');
+    $('#patApptBody').innerHTML = html || '<div class="loading">No appointments</div>';
+  })
+  .catch(e=>alert('Failed to load patient info: '+e));
+}
+
+function delPatient(id){
+  if(!confirm('Delete this patient? This action cannot be undone.')) return;
+  
+  const card = document.getElementById(`patient-${id}`);
+  if(card) card.classList.add('removing');
+  
+  fetch(`/admin/api/patient/${id}/delete/`,{
+    method:'POST',
+    headers:{'X-CSRFToken':csrftoken(),'Content-Type':'application/json'}
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      setTimeout(()=>{ 
+        if(card) card.remove(); 
+        loadStats(); 
+      }, 300);
+      alert('✅ Patient deleted successfully!');
+    } else {
+      if(card) card.classList.remove('removing');
+      alert('❌ ' + (d.message || 'Delete failed'));
+    }
+  })
+  .catch(e=>{
+    if(card) card.classList.remove('removing');
+    alert('❌ Network error: '+e);
+  });
+}
+
+function cancelAppt(id){
+  if(!confirm('Cancel this appointment?')) return;
+  
+  fetch(`/admin/api/appointment/${id}/cancel/`,{
+    method:'POST',
+    headers:{'X-CSRFToken':csrftoken(),'Content-Type':'application/json'}
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      loadAllAppointments(); 
+      loadRecent(); 
+      loadStats();
+      alert('✅ Appointment cancelled successfully!');
+    } else {
+      alert('❌ ' + (d.message || 'Cancel failed'));
+    }
+  })
+  .catch(e=>alert('❌ Network error: '+e));
+}
+
+
+
+/* -------- Initial + Auto Refresh -------- */
+function refreshAll(){ loadStats(); loadRecent(); loadDoctors(); loadPatients(); loadAllAppointments(); }
+refreshAll();
+setInterval(refreshAll, 10000);
+</script>
+</body>
+</html>

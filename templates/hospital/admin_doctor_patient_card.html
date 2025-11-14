@@ -1,0 +1,131 @@
+{% load static %}
+<div class="role-cards-section">
+  <div class="container my-5">
+    <div class="row justify-content-center gy-4">
+      <!-- Admin Card -->
+      <div class="col-xs-12 col-md-4 d-flex justify-content-center">
+        <div class="role-card glass-card admin-card">
+          <div class="role-icon-wrapper">
+            <i class="fa fa-user-secret fa-3x"></i>
+          </div>
+          <div class="role-title mt-3">ADMIN</div>
+          <a href="/adminclick" class="btn role-btn mt-3">MANAGE</a>
+        </div>
+      </div>
+      <!-- Doctor Card -->
+      <div class="col-xs-12 col-md-4 d-flex justify-content-center">
+        <div class="role-card glass-card doctor-card">
+          <div class="role-icon-wrapper">
+            <i class="fa fa-user-md fa-3x"></i>
+          </div>
+          <div class="role-title mt-3">DOCTOR</div>
+          <a href="/doctorclick" class="btn role-btn mt-3">Start Shift</a>
+        </div>
+      </div>
+      <!-- Patient Card -->
+      <div class="col-xs-12 col-md-4 d-flex justify-content-center">
+        <div class="role-card glass-card patient-card">
+          <div class="role-icon-wrapper">
+            <i class="fa fa-heartbeat fa-3x"></i>
+          </div>
+          <div class="role-title mt-3">PATIENT</div>
+          <a href="/patientclick" class="btn role-btn mt-3">GET CARE</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modern Glassmorphism and Animation Styling -->
+<style>
+  .role-cards-section {
+    padding-top: 32px;
+    padding-bottom: 32px;
+    background: transparent;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.18);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    width: 320px;
+    min-height: 320px;
+    padding: 36px 18px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .glass-card:hover {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 14px 40px rgba(31,38,135,0.25);
+    border-color: #764ba2;
+  }
+  .role-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 50%, #764ba2 100%);
+    padding: 24px;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(150, 84, 179, 0.16);
+    color: #fff;
+    animation: pulse 2.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 24px rgba(102,126,234,0.24), 0 0 0 0 rgba(118,75,162,0.12); }
+    50% { box-shadow: 0 8px 32px rgba(102,126,234,0.4), 0 0 6px 6px rgba(118,75,162,0.18); }
+  }
+  .role-title {
+    font-size: 1.8rem;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #241b36;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    margin-top: 12px;
+    transition: color 0.3s;
+  }
+  .role-btn {
+    display: block;
+    width: 90%;
+    padding: 11px 0;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #fff !important;
+    border: none;
+    border-radius: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg,#667eea 0%, #764ba2 95%);
+    box-shadow: 0 2px 8px rgba(102,126,234,0.14);
+    transition: background 0.3s, box-shadow 0.3s;
+    text-align: center;
+    text-decoration: none !important;
+  }
+  .role-btn:hover {
+    background: linear-gradient(90deg,#764ba2 0%, #667eea 100%);
+    box-shadow: 0 4px 15px rgba(118,75,162,0.19);
+    color: #fff !important;
+  }
+  /* Responsive */
+  @media (max-width:1000px) {
+    .role-cards-section .container .row { gap: 2rem 0 !important; }
+    .glass-card { width: 90vw; max-width: 360px; }
+  }
+  @media (max-width:700px){
+    .glass-card { 
+      width: 96vw;
+      max-width: 420px;
+      min-height: 230px;
+      padding: 22px 8px 12px 8px;
+    }
+    .role-title { font-size: 1.3rem; }
+  }
+</style>

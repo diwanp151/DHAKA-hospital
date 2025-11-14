@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>diwan || samskrutian</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style type="text/css">
+    body {
+      color: #32324d;
+      background: linear-gradient(120deg, #b6bde7 0%, #e9e4f0 100%);
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .patient-hero {
+      margin-top: 40px;
+      margin-bottom: 0;
+      padding: 40px 0 25px 0;
+      background: linear-gradient(135deg, rgba(118,75,162,0.9) 0%, rgba(102,126,234,0.95) 100%);
+      color: #fff;
+      text-align: center;
+      border-radius: 0 0 48px 48px;
+      box-shadow: 0 4px 24px rgba(102,126,234,0.13);
+      position: relative;
+      z-index: 1;
+    }
+    .patient-hero h1 {
+      margin: 0;
+      font-size: 2.6rem;
+      font-weight: 700;
+      text-shadow: 0 3px 24px rgba(0,0,0,0.22);
+    }
+    .patient-hero .caption {
+      font-size: 1.2rem;
+      opacity: 0.90;
+      margin: 12px auto 0 auto;
+      max-width: 480px;
+      letter-spacing: 0.5px;
+    }
+    .features-attract {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .feature-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 18px rgba(150, 84, 179, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  min-height: 150px;
+  padding: 16px 10px 10px 10px;
+  margin-bottom: 20px;
+  border-left: 7px solid #764ba2;
+  border-right: 7px solid #667eea;
+  transition: transform .22s, box-shadow .22s;
+  color: #32324d; /* Ensures text is visible! */
+}
+.feature-card:hover {
+  box-shadow: 0 6px 30px rgba(102,126,234,0.12);
+  transform: translateY(-5px) scale(1.03);
+}
+.feature-card i {
+  font-size: 2.3rem;
+  color: #764ba2;
+  margin-bottom: 12px;
+  margin-top: 5px;
+  text-shadow: 0 2px 9px #e9e4f0;
+}
+.feature-card strong {
+  font-size: 1.09rem;
+  margin-bottom: 4px;
+  color: #764ba2; /* Makes heading pop */
+}
+.feature-card div {
+  font-size: 0.99rem;
+  margin-top: 3px;
+  color: #32324d; /* Makes details readable */
+  text-align: center;
+}
+
+    /* Enhanced Login Panel */
+    .login-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(102,126,234, 0.12);
+      padding: 40px 32px 36px 32px;
+      max-width: 440px;
+      text-align: center;
+      margin: 0 auto;
+    }
+    .login-card .note {
+      background: linear-gradient(90deg,#667eea 80%, #764ba2 100%);
+      font-size: 1.2rem;
+      color: #fff;
+      border-radius: 9px;
+      font-weight: bold;
+      padding: 18px 0;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      box-shadow: 0 1px 6px rgba(100,100,150,0.11);
+    }
+    .form-content {
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+    .form-control {
+      border-radius: 1.5rem;
+      box-shadow: 0 3px 8px rgba(118,75,162,0.09);
+      padding: 16px 16px;
+      background: #f6f7fb;
+      border: 1.6px solid #eee;
+      font-size: 1.09rem;
+      width: 99%;
+    }
+    .btnSubmit {
+      border: none;
+      border-radius: 24px;
+      padding: 12px 0;
+      width: 75%;
+      margin: 20px 0;
+      cursor: pointer;
+      background: linear-gradient(90deg,#667eea 70%, #764ba2 100%);
+      font-size: 1.2rem;
+      color: #fff;
+      font-weight: 500;
+      transition: background .2s, transform .2s;
+    }
+    .btnSubmit:hover {
+      background: linear-gradient(90deg,#764ba2 60%, #667eea 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .login-card .text-center {
+      padding-top: 5px;
+      margin-bottom: 10px;
+      font-size: 0.99rem;
+    }
+    .login-card .text-center a {
+      color: #667eea;
+      font-weight: 600;
+    }
+    @media (max-width:800px){
+      .patient-hero h1 { font-size: 2rem; }
+      .feature-card { width: 100%; min-width: 210px; }
+    }
+    @media (max-width: 480px){
+      .login-card { padding: 24px 8px 20px 8px; }
+      .patient-hero {padding:18px 0 12px 0;}
+    }
+  </style>
+</head>
+<body>
+  {% include "hospital/navbar.html" %}
+
+  <!-- HERO SECTION -->
+  <div class="patient-hero">
+    <h1>Welcome, Patient!</h1>
+    <div class="caption">
+      Join us for a smooth, caring hospital experience.<br>
+      Our trusted professionals are here to help you heal quickly and comfortably.
+    </div>
+    <div class="features-attract">
+      <div class="feature-card">
+        <i class="fa fa-heartbeat"></i>
+        <strong>24/7 Emergency Care</strong>
+        <div>Get rapid, round-the-clock support—when you need it most.</div>
+      </div>
+      <div class="feature-card">
+        <i class="fa fa-user-md"></i>
+        <strong>Expert Doctors</strong>
+        <div>Consult with leading specialists and experienced healthcare teams.</div>
+      </div>
+      <div class="feature-card">
+        <i class="fa fa-thumbs-up"></i>
+        <strong>Patient First</strong>
+        <div>Friendly staff and a warm, safe environment for you and your family.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div class="login-wrap">
+    <form method="post" class="login-card">
+      {% csrf_token %}
+      <div class="note">Patient Login Page</div>
+      <div class="form-content">
+        {% if error_messages %}
+          <div class="error" style="color:#b32828; margin-bottom:16px;">
+            {% for error in error_messages %}
+              <p>{{ error }}</p>
+           {% endfor %}
+          </div>
+       {% endif %}
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="form-group">
+              {% render_field form.username class="form-control" placeholder="Username" %}
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              {% render_field form.password class="form-control" placeholder="Password" %}
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btnSubmit">Login</button>
+        <div class="text-center">Don't have an account? <a href="patientsignup">Sign up now</a></div>
+      </div>
+    </form>
+  </div>
+
+  {% include "hospital/footer.html" %}
+</body>
+</html>

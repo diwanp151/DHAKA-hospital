@@ -1,0 +1,785 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Dashboard - MediCare Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f7fa;
+      color: #2d3748;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-menu {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .navbar-menu a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .navbar-menu a:hover {
+      color: #2563eb;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .logout-btn {
+      padding: 0.5rem 1.5rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #1d4ed8;
+      color: white;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      color: white;
+      padding: 4rem 5%;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.95;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: -3rem auto 3rem;
+      padding: 0 5%;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-left: 4px solid #2563eb;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .stat-card h3 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2563eb;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Section */
+    .section {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title i {
+      color: #2563eb;
+    }
+
+    /* Specialties */
+    .specialties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .specialty-card {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      padding: 1.5rem 1rem;
+      border-radius: 12px;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .specialty-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .specialty-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .specialty-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* Doctors Grid */
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .doctor-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .doctor-card:hover {
+      border-color: #2563eb;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.15);
+      transform: translateY(-5px);
+    }
+
+    .doctor-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #2563eb;
+      margin-bottom: 1rem;
+    }
+
+    .doctor-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+
+    .doctor-specialty {
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .doctor-info {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin: 0.25rem 0;
+      text-align: left;
+    }
+
+    .doctor-fee {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #10b981;
+      margin: 1rem 0;
+    }
+
+    .book-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: block;
+    }
+
+    .book-btn:hover {
+      background: #1d4ed8;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-confirmed { background: #dbeafe; color: #1e40af; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-completed { background: #d1fae5; color: #065f46; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    .report-btn {
+      padding: 0.5rem 1rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+
+    .report-btn:hover {
+      background: #1d4ed8;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #94a3b8;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    /* Footer */
+    footer {
+      background: #1e293b;
+      color: white;
+      padding: 3rem 5%;
+      margin-top: 4rem;
+    }
+
+    .footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .footer-section p,
+    .footer-section a {
+      color: #94a3b8;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid #334155;
+      color: #94a3b8;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .navbar-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+
+      .section {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <i class="fas fa-hospital-alt"></i>
+      MediCare Portal
+    </div>
+    <div class="navbar-menu">
+      <a href="#doctors">Find Doctors</a>
+      <a href="#appointments">Appointments</a>
+      <a href="#reports">Reports</a>
+    </div>
+    <div class="user-section">
+      <span class="user-name">{{ patient.get_name }}</span>
+      <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Welcome back, {{ patient.get_name }}! 👋</h1>
+    <p>Manage your health, book appointments, and consult with expert doctors</p>
+  </section>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>{{ total_appointments }}</h3>
+        <p>Total Appointments</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ pending_appointments }}</h3>
+        <p>Pending</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ completed_appointments }}</h3>
+        <p>Completed</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ medical_reports.count }}</h3>
+        <p>Medical Reports</p>
+      </div>
+    </div>
+
+    <!-- Specialties -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-stethoscope"></i>
+          Medical Specialties
+        </h2>
+      </div>
+      <div class="specialties-grid">
+        {% for spec in specializations %}
+        <div class="specialty-card" onclick="scrollToSection('doctors')">
+          <div class="specialty-icon">
+            {% if 'cardio' in spec|lower %}
+              <i class="fas fa-heartbeat"></i>
+            {% elif 'neuro' in spec|lower %}
+              <i class="fas fa-brain"></i>
+            {% elif 'ortho' in spec|lower %}
+              <i class="fas fa-bone"></i>
+            {% elif 'pediatric' in spec|lower %}
+              <i class="fas fa-baby"></i>
+            {% else %}
+              <i class="fas fa-user-md"></i>
+            {% endif %}
+          </div>
+          <div class="specialty-name">{{ spec }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Doctors -->
+<!-- Doctors -->
+<section class="mt-5">
+  <h4 class="mb-3">👨‍⚕️ Our Expert Doctors</h4>
+
+  {% if doctors %}
+    <div class="row g-4">
+      {% for d in doctors %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-3">
+              <img
+                src="{% if d.profile_pic %}{{ d.profile_pic.url }}{% else %}{% static 'default-doctor.png' %}{% endif %}"
+                alt="Dr {{ d.user.first_name }}"
+                class="rounded-circle me-3"
+                width="56" height="56">
+              <div>
+                <div class="fw-semibold">Dr. {{ d.user.first_name }} {{ d.user.last_name }}</div>
+                <div class="text-muted small">{{ d.get_department_display|default:d.department }}</div>
+              </div>
+            </div>
+
+            <ul class="list-unstyled small text-muted mb-3">
+              <li><i class="fas fa-map-marker-alt me-2"></i>{{ d.address|default:"—" }}</li>
+              <li><i class="fas fa-phone me-2"></i>{{ d.mobile|default:"—" }}</li>
+            </ul>
+
+           <a href="{% url 'patient-book-appointment' d.id %}" class="book-btn">
+              Book Appointment
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state text-center py-4">
+      <i class="fas fa-user-md fa-2x text-muted mb-2"></i>
+      <h5 class="mb-1">No doctors available yet</h5>
+      <p class="text-muted mb-0">Please check back soon.</p>
+    </div>
+  {% endif %}
+</section>
+
+    <!-- Appointments -->
+<div class="section" id="appointments">
+  <div class="section-header">
+    <h2 class="section-title">
+      <i class="fas fa-calendar-alt"></i>
+      Your Appointments
+    </h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Doctor</th>
+        <th>Date &amp; Time</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Fee</th>
+        <th>Report</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for apt in appointments %}
+      <tr>
+        <td>
+          <strong>Dr. {{ apt.doctor.get_name }}</strong><br>
+          <small style="color:#64748b;">{{ apt.doctor.department }}</small>
+        </td>
+
+        <td>
+          {% if apt.appointment_date %}
+            {{ apt.appointment_date|date:"d M Y" }}
+          {% else %}
+            —
+          {% endif %}
+          <br>
+          <small>
+            {% if apt.appointment_time %}
+              {{ apt.appointment_time|time:"H:i" }}
+            {% else %}
+              —
+            {% endif %}
+          </small>
+        </td>
+
+        <td>
+          {% if apt.consultation_type == 'video' %}
+            <i class="fas fa-video"></i> Video
+          {% else %}
+            <i class="fas fa-hospital"></i> In-Person
+          {% endif %}
+        </td>
+
+        <td>
+          <span class="badge badge-{{ apt.status|default:'pending' }}">
+            {{ apt.get_status_display|default:apt.status|title }}
+          </span>
+        </td>
+
+        <td>
+          {% if apt.payment_status %}
+            <span style="color:#10b981;">✓ ₹{{ apt.payment_amount|default:"0" }}</span>
+          {% else %}
+            <span style="color:#ef4444;">✗ Pending</span>
+          {% endif %}
+        </td>
+
+        <td>
+          {# show at most one report link for this patient+doctor #}
+          {% with link_shown=False %}
+            {% for report in medical_reports %}
+              {% if not link_shown and report.patient_id == patient.id and report.doctor_id == apt.doctor_id %}
+                <a href="{{ report.report_file.url }}" target="_blank" class="report-btn">View Report</a>
+                {% with True as link_shown %}{% endwith %}
+              {% endif %}
+            {% endfor %}
+            {% if not link_shown %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          {% endwith %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Appointments Yet</h3>
+            <p>Book your first appointment</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+    <!-- Medical Reports -->
+    <div class="section" id="reports">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-file-medical"></i>
+          Medical Reports
+        </h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Report Title</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for report in medical_reports %}
+          <tr>
+            <td>{{ report.title }}</td>
+            <td>Dr. {{ report.doctor.get_name }}</td>
+            <td>{{ report.uploaded_date|date:"d M Y" }}</td>
+            <td>
+              <a href="{{ report.report_file.url }}" target="_blank" class="report-btn">
+                View Report
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No Reports Yet</h3>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h4>MediCare Portal</h4>
+        <p>Your trusted healthcare partner for quality medical services.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <a href="#doctors">Find Doctors</a>
+        <a href="#appointments">Appointments</a>
+        <a href="{% url 'aboutus' %}">About Us</a>
+        <a href="{% url 'contactus' %}">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📍 Telangana, India</p>
+        <p>📞 +91 7702390287</p>
+        <p>✉️ diwanp151@gmail.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Made with ❤️ in Telangana | © 2025 Diwanp151</p>
+    </div>
+  </footer>
+
+  <script>
+     function scrollToSection(id) {
+       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+     }
+     function updatePatientProfile() {
+    fetch('/patient/api/profile/')
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+         const p = data.patient;
+        
+         // Update profile info if elements exist
+         const ageEl = document.querySelector('[data-patient-age]');
+         if (ageEl) ageEl.textContent = p.age;
+        
+         const genderEl = document.querySelector('[data-patient-gender]');
+         if (genderEl) genderEl.textContent = p.gender;
+        
+         const bloodEl = document.querySelector('[data-patient-blood]');
+         if (bloodEl) bloodEl.textContent = p.blood_group;
+        
+          console.log('✅ Patient profile updated');
+        }
+      })
+      .catch(err => console.log('Profile update error:', err));
+    }
+
+   function updatePatientAppointments() {
+   fetch('/patient/api/appointments/realtime/')
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          const counts = data.counts;
+        
+         const totalEl = document.querySelector('[data-appt-total]');
+         if (totalEl) totalEl.textContent = counts.total;
+        
+         const pendingEl = document.querySelector('[data-appt-pending]');
+         if (pendingEl) pendingEl.textContent = counts.pending;
+
+         const completedEl = document.querySelector('[data-appt-completed]');
+         if (completedEl) completedEl.textContent = counts.completed;
+        
+         console.log('✅ Appointments updated:', counts);
+        }
+      })
+      .catch(err => console.log('Appointments update error:', err));
+    }
+
+    // Update every 15 seconds
+    setInterval(() => {
+   updatePatientProfile();
+   updatePatientAppointments();
+   }, 15000);
+
+    // Initial update after 2 seconds
+   setTimeout(() => {
+   updatePatientProfile();
+   updatePatientAppointments();
+    }, 2000);
+ </script>
+
+</body>
+</html>

@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment - MediCare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .booking-container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 25px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .booking-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .booking-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .booking-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .doctor-profile {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      padding: 40px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .doctor-avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .doctor-details h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .doctor-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .doctor-info {
+      color: #666;
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .doctor-info i {
+      color: #667eea;
+      margin-right: 10px;
+      width: 20px;
+    }
+
+    .booking-form {
+      padding: 40px;
+    }
+
+    .form-section {
+      margin-bottom: 30px;
+    }
+
+    .form-section h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-section h3 i {
+      color: #667eea;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .consultation-types {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .consultation-option {
+      position: relative;
+    }
+
+    .consultation-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .consultation-option label {
+      display: block;
+      padding: 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .consultation-option input[type="radio"]:checked + label {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .consultation-option label i {
+      font-size: 2rem;
+      color: #667eea;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .payment-summary {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 30px;
+      border-radius: 15px;
+      margin: 30px 0;
+    }
+
+    .payment-summary h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .payment-row:last-child {
+      border-bottom: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #28a745;
+      margin-top: 10px;
+    }
+
+    .mock-payment-badge {
+      display: inline-block;
+      padding: 8px 15px;
+      background: #ffc107;
+      color: #000;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      color: #764ba2;
+      transform: translateX(-5px);
+    }
+
+    .back-link i {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .doctor-profile {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .consultation-types {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-form {
+        padding: 20px;
+      }
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #28a745;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="booking-container">
+    <!-- Header -->
+    <div class="booking-header">
+      <h1><i class="fas fa-calendar-plus"></i> Book Your Appointment</h1>
+      <p>Schedule a consultation with our expert doctor</p>
+    </div>
+
+    <!-- Doctor Profile -->
+    <div class="doctor-profile">
+      {% if doctor.profile_pic %}
+        <img src="{{ doctor.profile_pic.url }}" alt="Dr. {{ doctor.get_name }}" class="doctor-avatar">
+      {% else %}
+        <img src="{% static 'default-doctor.png' %}" alt="Dr. {{ doctor.get_name }}" class="doctor-avatar">
+      {% endif %}
+      <div class="doctor-details">
+        <h2>Dr. {{ doctor.get_name }}</h2>
+        <div class="doctor-badge">{{ doctor.department }}</div>
+        <p class="doctor-info"><i class="fas fa-graduation-cap"></i> {{ doctor.qualifications }}</p>
+        <p class="doctor-info"><i class="fas fa-briefcase"></i> {{ doctor.experience_years }}+ years of experience</p>
+        <p class="doctor-info"><i class="fas fa-phone"></i> {{ doctor.mobile }}</p>
+        <p class="doctor-info"><i class="fas fa-star"></i> 4.8/5 Rating (248 reviews)</p>
+      </div>
+    </div>
+
+    <!-- Booking Form -->
+    <form method="POST" class="booking-form">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <h3><i class="fas fa-calendar"></i> Appointment Details</h3>
+        
+        <div class="form-group">
+          <label for="appointment_date">Select Date *</label>
+          <input type="date" id="appointment_date" name="appointment_date" required min="{{ today|date:'Y-m-d' }}">
+        </div>
+
+        <div class="form-group">
+          <label for="appointment_time">Select Time *</label>
+          <input type="time" id="appointment_time" name="appointment_time" required min="09:00" max="18:00">
+          <small style="color: #666; display: block; margin-top: 5px;">
+            <i class="fas fa-info-circle"></i> Available: 9:00 AM - 6:00 PM
+          </small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fas fa-video"></i> Consultation Type</h3>
+        <div class="consultation-types">
+          <div class="consultation-option">
+            <input type="radio" id="in-person" name="consultation_type" value="in-person" checked>
+            <label for="in-person">
+              <i class="fas fa-hospital"></i>
+              <strong>In-Person Visit</strong>
+              <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Visit our clinic</p>
+            </label>
+          </div>
+          <div class="consultation-option">
+            <input type="radio" id="video" name="consultation_type" value="video">
+            <label for="video">
+              <i class="fas fa-video"></i>
+              <strong>Video Consultation</strong>
+              <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Online meeting</p>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fas fa-notes-medical"></i> Your Symptoms</h3>
+        <div class="form-group">
+          <label for="description">Describe your health concern *</label>
+          <textarea id="description" name="description" rows="5" placeholder="Please describe your symptoms, medical history, or reason for consultation..." required></textarea>
+        </div>
+      </div>
+
+      <!-- Payment Summary -->
+      <div class="payment-summary">
+        <h3><i class="fas fa-receipt"></i> Payment Summary</h3>
+        <div class="payment-row">
+          <span>Consultation Fee</span>
+          <span style="font-weight: 600;">₹{{ doctor.consultation_fee }}</span>
+        </div>
+        <div class="payment-row">
+          <span>Platform Fee</span>
+          <span style="font-weight: 600;">₹0</span>
+        </div>
+        <div class="payment-row">
+          <span><strong>Total Amount</strong></span>
+          <span>₹{{ doctor.consultation_fee }}</span>
+        </div>
+        <div class="mock-payment-badge">
+          <i class="fas fa-lock"></i> Mock Payment Mode - No actual payment required
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-check-circle"></i> Confirm & Book Appointment
+      </button>
+
+      <a href="{% url 'patient-dashboard' %}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </form>
+  </div>
+
+  <script>
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const date = document.getElementById('appointment_date').value;
+      const time = document.getElementById('appointment_time').value;
+      
+      if (!date || !time) {
+        e.preventDefault();
+        alert('Please select both date and time for your appointment');
+        return;
+      }
+
+      // Show loading state
+      const btn = document.querySelector('.submit-btn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      btn.disabled = true;
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('appointment_date').setAttribute('min', today);
+  </script>
+
+</body>
+</html>

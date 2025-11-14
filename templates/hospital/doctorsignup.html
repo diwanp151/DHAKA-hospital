@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Doctor Sign Up | Hospital</title>
+  <style>
+    body{color:#0f2240;background:#b6bde7;font-family:'Roboto',system-ui,Segoe UI,Arial,sans-serif}
+    a:link{text-decoration:none}
+    .note{text-align:center;height:80px;background:linear-gradient(90deg,#0072ff,#8811c5);color:#fff;font-weight:700;line-height:80px;border-radius:8px 8px 0 0}
+    .register-form{max-width:980px}
+    .form{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 12px 30px rgba(16,27,63,.15)}
+    .form-content{padding:28px}
+    .form-control{border-radius:12px;padding:.7rem .9rem}
+    .btnSubmit{border:0;border-radius:12px;padding:.7rem 1.2rem;min-width:160px;cursor:pointer;background:#0062cc;color:#fff}
+    .btnSubmit:hover{background:#004fa4}
+    .errorlist{color:#b00020;margin:6px 0 0 0;padding:0;list-style:none;font-weight:600;font-size:.95em}
+    .errors-wrap{background:#fff2f2;border:1px solid #ffd0d0;color:#8a1020;border-radius:8px;padding:10px 14px;margin:0 0 18px 0}
+    .row{display:flex;gap:18px;flex-wrap:wrap}
+    .col-md-6{flex:1 1 360px}
+    .help{font-size:.85em;color:#6b7280}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:720px){.split{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  {% include "hospital/navbar.html" %}
+  <br><br><br><br>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="form">
+        <div class="note">
+          <p>Register In Hospital</p>
+        </div>
+
+        <div class="form-content">
+
+          {# ===== Top error summary (both forms) ===== #}
+          {% if userForm.errors or doctorForm.errors or userForm.non_field_errors or doctorForm.non_field_errors %}
+            <div class="errors-wrap">
+              <strong>Please fix the issues below:</strong>
+              <ul class="errorlist" style="margin-top:6px">
+                {% for error in userForm.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                {% for error in doctorForm.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+
+                {% for field in userForm %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+
+                {% for field in doctorForm %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                {% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+                {{ userForm.first_name.errors }}
+              </div>
+
+              <div class="form-group">
+                {% render_field userForm.username class="form-control" placeholder="Username" %}
+                <div class="help">Must be unique. If this username already exists (as a patient or doctor), choose another.</div>
+                {{ userForm.username.errors }}
+              </div>
+
+              <div class="form-group">
+                {% render_field doctorForm.department class="form-control" placeholder="Department / Specialty (e.g., Cardiologist)" %}
+                {{ doctorForm.department.errors }}
+              </div>
+
+              <div class="form-group">
+                {% render_field doctorForm.address class="form-control" placeholder="Clinic Address" %}
+                {{ doctorForm.address.errors }}
+              </div>
+
+              {# NEW: Qualification + Experience #}
+              <div class="split">
+                <div class="form-group">
+                  {% render_field doctorForm.qualification class="form-control" placeholder="Qualification (e.g., MBBS, MD)" %}
+                  <div class="help">Example: MBBS, MS; MBBS, MD (Medicine)</div>
+                  {{ doctorForm.qualification.errors }}
+                </div>
+                <div class="form-group">
+                  {% render_field doctorForm.experience_years class="form-control" placeholder="Experience (years)" min="0" %}
+                  <div class="help">Enter total years of experience.</div>
+                  {{ doctorForm.experience_years.errors }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
+                {{ userForm.last_name.errors }}
+              </div>
+
+              {# Passwords (UserCreationForm) #}
+              <div class="form-group">
+                {% render_field userForm.password1 class="form-control" placeholder="Password" autocomplete="new-password" %}
+                {{ userForm.password1.errors }}
+              </div>
+              <div class="form-group">
+                {% render_field userForm.password2 class="form-control" placeholder="Confirm Password" autocomplete="new-password" %}
+                {{ userForm.password2.errors }}
+              </div>
+
+              <div class="form-group">
+                {% render_field doctorForm.mobile class="form-control" placeholder="Mobile" %}
+                {{ doctorForm.mobile.errors }}
+              </div>
+
+              <div class="form-group">
+                {% render_field doctorForm.profile_pic class="form-control" required="required" %}
+                <div class="help">Upload a clear square picture (JPG/PNG).</div>
+                {{ doctorForm.profile_pic.errors }}
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btnSubmit">Register</button>
+          <div class="text-center" style="margin-top:10px">
+            Already have an account? <a href="{% url 'doctorlogin' %}">Login here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {% include "hospital/footer.html" %}
+</body>
+</html>

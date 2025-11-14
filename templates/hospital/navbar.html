@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style type="text/css">
+    .bs-example { margin: 0; }
+
+    /* Navbar look */
+    .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+      padding: 14px 30px;
+      transition: padding 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .navbar.scrolled {
+      padding: 10px 30px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .navbar-brand {
+      color: #fff !important;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      transform: scale(1.05);
+    }
+
+    .navbar-brand::before {
+      content: '⚕️';
+      margin-right: 10px;
+      font-size: 22px;
+    }
+
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 8px 18px !important;
+      border-radius: 26px;
+      position: relative;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .navbar-nav .nav-link.active {
+      background: rgba(255, 255, 255, 0.28);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    @media (max-width: 768px) {
+      .navbar-brand {
+        font-size: 20px;
+      }
+
+      .navbar-nav .nav-link {
+        margin: 4px 0;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bs-example">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+      <a href="/" class="navbar-brand">Hospital Management</a>
+
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav">
+          <a href="/adminclick" class="nav-item nav-link">Admin</a>
+          <a href="/doctorclick" class="nav-item nav-link">Doctor</a>
+          <a href="/patientclick" class="nav-item nav-link">Patient</a>
+        </div>
+        <div class="navbar-nav">
+          <a href="/aboutus" class="nav-item nav-link">About Us</a>
+          <a href="/contactus" class="nav-item nav-link">Contact Us</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Scroll shrink effect -->
+  <script>
+    (function () {
+      var nav = document.querySelector('.navbar');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      });
+    })();
+
+    // Active link logic (keeps old URLs intact)
+    (function () {
+      var path = window.location.pathname;
+      var map = {
+        "/adminclick": ["/adminclick", "/adminlogin", "/adminsignup", "/admin-dashboard"],
+        "/doctorclick": ["/doctorclick", "/doctorlogin", "/doctorsignup", "/doctor-dashboard", "/doctor-view-patient", "/doctor-view-appointment"],
+        "/patientclick": ["/patientclick", "/patientlogin", "/patientsignup", "/patient-dashboard", "/patient-view-appointment", "/patient-view-doctor"],
+        "/aboutus": ["/aboutus"],
+        "/contactus": ["/contactus"]
+      };
+
+      document.querySelectorAll('.navbar-nav .nav-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (map[href]) {
+          var isActive = map[href].some(function (p) {
+            return path === p || path.startsWith(p + "/");
+          });
+          if (isActive) link.classList.add('active');
+        }
+      });
+    })();
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

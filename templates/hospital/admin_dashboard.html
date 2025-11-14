@@ -1,0 +1,196 @@
+{% extends "hospital/admin_base.html" %}
+{% load static %}
+
+{# ---- Head overrides only for this page ---- #}
+{% block extra_head %}
+  {{ block.super }}
+  <style>
+    /* Scope everything to this page so other admin pages stay unchanged */
+    .admin-dashboard-page .wrap{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Optional: hide the left green sidebar on this page only.
+       If you want to keep it, delete this block. */
+    .admin-dashboard-page .sidenav,
+    .admin-dashboard-page .left-panel,
+    .admin-dashboard-page .sidebar{
+      display:none !important;
+    }
+    .admin-dashboard-page .wrap{ padding-left: 0 !important; }
+
+    /* Topbar look */
+    .admin-dashboard-page .navbar, 
+    .admin-dashboard-page .topbar{
+      background: radial-gradient(1100px 200px at 30% -20%, rgba(60,255,190,.20), transparent 60%) , #0b0f10 !important;
+      border-bottom: 1px solid rgba(124,255,203,.25) !important;
+      color:#dffdef !important;
+    }
+    .admin-dashboard-page .navbar a{ color:#cffff0 !important; }
+
+    /* Panels / cards */
+    .admin-dashboard-page .panel{
+      background: rgba(0,0,0,.78) !important;
+      border: 1px solid rgba(124,255,203,.25) !important;
+      box-shadow: 0 8px 28px rgba(0,0,0,.35);
+      color: #dbffe9 !important;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .admin-dashboard-page .panel-heading{
+      background: linear-gradient(90deg, rgba(20,255,170,.15), rgba(0,0,0,.0)) !important;
+      border-bottom: 1px solid rgba(124,255,203,.25) !important;
+      padding: 14px 16px !important;
+    }
+    .admin-dashboard-page .panel-title{
+      margin: 0;
+      color: #7CFFCB !important;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 700;
+    }
+
+    /* Tables */
+    .admin-dashboard-page table{
+      margin: 0;
+      width: 100%;
+      color: #eafff6 !important;
+      background: transparent !important;
+    }
+    .admin-dashboard-page thead th{
+      background: rgba(20,255,170,.10) !important;
+      color:#b4ffe6 !important;
+      border: 0 !important;
+      padding: 12px 14px !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing:.03em;
+    }
+    .admin-dashboard-page tbody tr{
+      background: rgba(0,0,0,.35) !important;
+      border-bottom: 1px solid rgba(124,255,203,.12) !important;
+    }
+    .admin-dashboard-page tbody tr:hover{
+      background: rgba(20,255,170,.08) !important;
+    }
+    .admin-dashboard-page td{
+      padding: 12px 14px !important;
+      vertical-align: middle !important;
+    }
+
+    /* Labels -> Chips */
+    .admin-dashboard-page .label{
+      display:inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      font-size: .85rem;
+      line-height: 1.1rem;
+    }
+    .admin-dashboard-page .label-primary{
+      color:#aaffd9; border-color: rgba(124,255,203,.5);
+      background: rgba(124,255,203,.12);
+    }
+    .admin-dashboard-page .label-success{
+      color:#ffe9b0; border-color: rgba(255,200,0,.45);
+      background: rgba(255,200,0,.12);
+    }
+
+    /* Spacing helpers */
+    .admin-dashboard-page .mb-24{ margin-bottom:24px; }
+    .admin-dashboard-page .mt-24{ margin-top:24px; }
+
+    /* Make columns stack nicely on small screens */
+    @media (max-width: 992px){
+      .admin-dashboard-page .col-md-5{ float:none; width:100%; margin:0 0 20px 0 !important;}
+    }
+  </style>
+{% endblock extra_head %}
+
+{% block content %}
+<div class="admin-dashboard-page">
+  <div class="wrap">
+    {# Your hero stats / hacker cards live inside this include #}
+    {% include 'hospital/admin_dashboard_cards.html' %}
+
+    <div class="container" style="width:100%; max-width:100%; margin-top: 24px;">
+      <div class="row" style="display:flex; gap:4%; flex-wrap:wrap;">
+
+        <div class="panel panel-primary col-md-5 mb-24" style="margin-left:0;">
+          <div class="panel-heading" style="text-align:center;">
+            <h6 class="panel-title">Recent Doctors</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover" id="dev-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Mobile</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for d in doctors %}
+                  <tr>
+                    <td>{{ d.get_name }}</td>
+                    <td>{{ d.department }}</td>
+                    <td>{{ d.mobile }}</td>
+                    {% if d.status %}
+                      <td><span class="label label-primary">Permanent</span></td>
+                    {% else %}
+                      <td><span class="label label-success">On Hold</span></td>
+                    {% endif %}
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="4" class="text-muted">No doctors yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-primary col-md-5 mb-24" style="margin-left:0;">
+          <div class="panel-heading" style="text-align:center;">
+            <h6 class="panel-title">Recent Patient</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover" id="dev-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Symptoms</th>
+                  <th>Mobile</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in patients %}
+                  <tr>
+                    <td>{{ p.get_name }}</td>
+                    <td>{{ p.symptoms }}</td>
+                    <td>{{ p.mobile }}</td>
+                    <td>{{ p.address }}</td>
+                    {% if p.status %}
+                      <td><span class="label label-primary">Admitted</span></td>
+                    {% else %}
+                      <td><span class="label label-success">On Hold</span></td>
+                    {% endif %}
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="5" class="text-muted">No patients yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock content %}
