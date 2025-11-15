@@ -88,7 +88,7 @@ urlpatterns = [
     # DOCTOR SECTION
     # ==============================
     path('doctor-dashboard', views.doctor_dashboard_view, name='doctor-dashboard'),
-    path('doctor-appointment', views.doctor_appointment_view, name='doctor-appointment'),
+    path('doctor-appointments', views.doctor_appointment_view, name='doctor-appointments'),
     path('doctor-view-appointment', views.doctor_view_appointment_view, name='doctor-view-appointment'),
     path('doctor-delete-appointment', views.doctor_delete_appointment_view, name='doctor-delete-appointment'),
     path('delete-appointment/<int:pk>', views.delete_appointment_view, name='delete-appointment'),
@@ -103,7 +103,9 @@ urlpatterns = [
     path('doctor/api/profile/', views.get_doctor_profile_api, name='doctor-api-profile'),
     path('doctor/api/appointments/realtime/', views.get_doctor_appointments_realtime, name='doctor-api-appointments-realtime'),
 
-
+    path('doctor-appointments', views.doctor_appointment_view, name='doctor-appointments'),
+    path('doctor-patients', views.doctor_patient_view, name='doctor-patients'),
+    path('doctor-profile', views.doctor_dashboard_view, name='doctor-profile'),
 
     # ==============================
     # PATIENT SECTION
